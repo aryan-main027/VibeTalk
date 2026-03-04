@@ -19,7 +19,9 @@ export const signup = async(req,res)=>{
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    const user = await User.findOne({email : email});
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const user = await User.findOne({email : normalizedEmail});
 
     if(user){
       return res.status(400).json({ message: "Email already exists" });
@@ -32,13 +34,13 @@ export const signup = async(req,res)=>{
 
     const newUser = new User({
       fullName,
-      email,
+      email : normalizedEmail,
       password : hashedPassword  
     })
 
     if(newUser){
-      generateToken(newUser._id,res);
       await newUser.save();
+      generateToken(newUser._id,res);
 
       res.status(201).json({
         _id: newUser._id,
