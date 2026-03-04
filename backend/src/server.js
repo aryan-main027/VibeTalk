@@ -4,10 +4,12 @@ import e from "express";
 import authRouter from "./routes/auth.route.js";
 import messageRouter from "./routes/message.route.js";
 import path from "path";
-
+import { connectDB } from "./lib/db.js";
 
 const app = e();
 const __dirname = path.resolve();
+
+app.use(e.json());
 
 app.use("/api/auth",authRouter);
 app.use("/api/messages",messageRouter);
@@ -27,4 +29,5 @@ if(process.env.NODE_ENV === "production"){
 
 app.listen(PORT , () => {
   console.log("Server Running at Port ",PORT);
+  connectDB();
 }) 
