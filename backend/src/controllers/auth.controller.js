@@ -45,7 +45,7 @@ export const signup = async(req,res)=>{
 
     if(newUser){
       const savedUser = await newUser.save();
-      generateToken(newUser._id,res);
+      generateToken(savedUser._id,res);
 
       res.status(201).json({
         _id: newUser._id,
@@ -75,7 +75,8 @@ export const login = async(req,res) => {
     return res.status(400).json({ message: "Email and password are required" });
   }
   try{
-    const user = await User.findOne({email});
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await User.findOne({email : normalizedEmail});
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isPasswordCorrect = await bcrypt.compare(password,user.password);
@@ -91,7 +92,7 @@ export const login = async(req,res) => {
       profilePic: user.profilePic,
     });
   }catch(err){
-    console.error("Error in login controller:", error);
+    console.error("Error in login controller:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
