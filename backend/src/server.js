@@ -7,10 +7,11 @@ import path from "path";
 import cors from "cors"
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser"
-const app = e();
+import { app, server } from "./lib/socket.js"
 const __dirname = path.resolve();
 
-app.use(e.json());
+app.use(e.json({ limit: "10mb" }));
+app.use(e.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 app.use(cors({origin : process.env.CLIENT_URL , credentials : true}));
@@ -35,7 +36,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
 

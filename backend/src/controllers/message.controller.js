@@ -1,6 +1,7 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import cloudinary from "../lib/cloudinary.js";
+import mongoose from "mongoose";
 
 export const getAllContacts = async(req,res) => {
   try {
@@ -76,7 +77,7 @@ export const sendMessage = async (req, res) => {
 
 export const getChatPartners = async (req,res) => {
   try {
-    const loggedInUserId = req.user._id;
+    const loggedInUserId = new mongoose.Types.ObjectId(req.user._id);
 
     // find all the messages where the logged-in user is either sender or receiver
     const messages = await Message.find({
